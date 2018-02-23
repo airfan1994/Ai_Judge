@@ -3,6 +3,7 @@
 获得第9名(9/415)
 
 
+
 主要步骤：
 
 1、分词 
@@ -17,12 +18,20 @@
 
 
 4、特征提取
+提取了一些常用的特征wordbag，TFIDF，word2vec,doc2vec
+一个非常有用的特征是每个案例里面涉及到的金额的总和及最大值(tiqu.py)
+wordbag特征很常用，TFIDF特征直接通过wordbag生成的，但是由于提取的太慢了，提取词袋特征的代码是用java写的，没有放在这里
 
 5、训练与模型
 题目要求对于每一个案件都给出判决犯了417条法律中的哪一条，8种罚金额度的哪一种，所以我们的初步思路是对于417条法律，每一条都训练一个模型，涉及到该条法律的案件作为正样例，不涉及该条法律的案件作为负样例，对于每条法律，每种罚金都训练一个二分类模型；
 
 虽然说每种法律都有可能性，但是有10条法律出现在95%以上的样例中，剩下的法律条文的数据条数非常少，所以对于那部分的样例训练出的结果极不稳定，我们选择只对那10条法律，8中罚金，每一个都训练二分类模型；
 
-模型上我们尝试了TFIDF+NaiveBayes（getTFIDF.py），word2vec+xgboost,wordbag+xgboost，cnn_feature+xgboost(getfeature.py+cnn_money.py)；
-发现wordbag+xgboost(getxgboostwordbagjin2.py)
+模型上我们尝试了TFIDF+NaiveBayes（getTFIDF.py），word2vec+xgboost,wordbag+xgboost(getxgboostwordbagjin2.py)，cnn_feature+xgboost(getfeature.py+cnn_money.py)；
+
+cnn_feature指的是用cnn训练一次，将中间层的结果作为特征输出到xgboost，具体网络结构和特征输出可以看cnn_money.py的代码
+
 6、模型融合
+wordbag+xgboost与cnn_feature+xgboost两种模型比较好，最终结果采用两种模型10种不同参数的bagging
+
+code文件夹存储的是代码，data文件夹是原始文件，feature文件夹是一些特征的中间结果，由于文件太大，没有上传数据和特征，可以去网站下载以及运行代码生成。
